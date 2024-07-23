@@ -1,0 +1,74 @@
+create database july;
+use july;
+
+create table students(rollno int primary key,sname varchar(30), per float, branch varchar(10),dob date);
+insert into students values(102,'Aman',89,'cse','2005-12-23');
+insert into students values(103,'Aman',90,'ece','2008-12-23');
+insert into students values(104,'Raman',70,'mech','2004-6-23');
+insert into students values(105,'Chaman',45,'cse','2006-8-23');
+insert into students values(106,'Aman',66,'civil','2001-11-23');
+
+
+select * from students;
+select rollno,sname,per from students;
+
+delete from students where rollno=104 or rollno=105 or rollno=106;
+delete from students where rollno in(103,102);
+select sname,per,rollno from students order by per;
+select sname,per from students order by per desc ;
+select sname,per from students order by per desc limit 3;
+
+insert into students(rollno,branch) values(108,'cse');
+update students set sname='Gabbar', per=110, dob=current_date() where rollno=108;
+update students set rollno=420 where rollno=108;
+
+select * from students where sname='Aman' and branch='cse' and per>=90;
+
+select * from students where branch<>'cse';
+select distinct branch from students;
+select max(per) as 'Highest' , min(per) as 'Lowest', avg(per) as 'Average', sum(per) from students;
+
+/*===================================*/
+use july;
+select * from students where per=(select max(per) as 'Highest' from students);
+select branch,max(per) as highest from students where branch='cse';
+
+select branch,max(per) as highest from students group by branch;
+
+/*====================*/
+create table library(bid int primary key, book varchar(30),doi date ,days int,dor date,toi time);
+insert into library values(101,'REal Java', current_date(),5,null,current_time()); 
+insert into library values(102,'REal C++', current_date(),15,null,current_time()); 
+insert into library values(103,'REal DSA', current_date(),6,null,current_time()); 
+insert into library values(104,'Real Node', current_date(),20,null,current_time()); 
+
+select * from library;
+
+update library set dor=date_add(doi,INTERVAL days DAY) where bid in(103,104);
+select *, datediff(dor,doi)	as 'Diff' from library;
+select * from library where doi<dor;
+/*==================*/
+use july;
+create table curd(email varchar(30) primary key, pwd varchar(20), dob date, picpath varchar(100));
+
+select * from curd;
+
+/*-----------------------------------*/
+use july;
+create table mail (sender varchar(30) ,reciver varchar(30),subject varchar(100),text varchar(500));
+
+select * from mail;
+
+/*=========================*/
+use july;
+
+select *  from curd;
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,24 @@
+create database projects;
+
+use projects;
+create table info (email varchar(30) primary key ,pass varchar(30),Confirm varchar(100),Account varchar(500), status  int);
+select * from info;
+ SET SQL_SAFE_UPDATES = 0;
+UPDATE info SET status=1 WHERE email='yatenarora@gmail.com';
+
+drop table info;
+/*======================================*/
+use projects;
+
+CREATE TABLE IProfile (email varchar(40) primary key,picpath varchar(30), name varchar(30),lastname varchar(30),gender varchar(30),dob date,contact varchar(10),address varchar(100),city varchar(20),state varchar(20),zip varchar(10),insta varchar(20),fb varchar(20),youtube varchar(30),twitter varchar(20),field varchar(100),txt varchar(400));
+  
+
+select * from IProfile ;
+
+drop table IProfile;
+
+/*=====================================*/
+use projects;
+create table events (rid int primary key auto_increment, emailid varchar(40),events varchar(40),doe date, tos time, city varchar(40),venue varchar(40));
+select * from events;
+drop table events;

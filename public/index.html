@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script src="/script/index.js">
+  </script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+  <script>
+    $(document).ready(function () {
+      $("#submitbtn").click(function () {
+        let password = $("#txtPwd").val();
+        let confirmPassword = $("#txtConPwd").val();
+
+        // Validate passwords match
+        if (password !== confirmPassword) {
+          $("#errmessage").html("Passwords do not match").css("color", "red");
+          return; // Stop execution if passwords don't match
+        }
+
+        // Clear any previous error messages
+        $("#errmessage").html("");
+
+        let obj = {
+          type: "post",
+          url: "/signup-process",
+          data: {
+            txtEmail: $("#txtEmail").val(),
+            txtPwd: $("#txtPwd").val(),
+            txtConPwd: $("#txtConPwd").val(),
+            accs: $('[name=acc]:checked').val()
+
+
+          }
+
+        }
+        $.ajax(obj).done(function (resp) {
+          $("#errmessage").html(resp);
+
+        }).fail(function (err) {
+          alert(err.statusText);
+
+
+        })
+
+      })
+
+      //----------------------------------------
+      $("#txtEmail").blur(function () {
+        const regex = /^([a-zA-Z0-9_\.\-\+])+@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        var email = $("#txtEmail").val();
+        if (regex.test(email)) {
+          $("#txtEmail").removeClass("is-invalid").addClass("is-valid");
+
+        } else {
+          $("#txtEmail").removeClass("is-valid").addClass("is-invalid");
+
+        }
+      });
+
+      //-----------------------------
+      $("#txtPwd").blur(function () {
+        var pwd = $("#txtPwd").val();
+        const regex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/;
+        if (regex.test(pwd)) {
+          $("#txtPwd").removeClass("is-invalid").addClass("is-valid");
+          $("#btnSignup").prop("disabled", false);
+        }
+        else {
+          $("#txtPwd").removeClass("is-valid").addClass("is-invalid");
+          $("#btnSignup").prop("disabled", true);
+        }
+      })
+
+      //----------------------------------------
+
+      $("#loginbtn").click(function () {
+
+
+        let obj = {
+          type: "post",
+          url: "/login-process",
+          data: {
+            txtEmaill: $("#txtEmaill").val(),
+            txtPwdd: $("#txtPwdd").val()
+          }
+        }
+
+        $.ajax(obj).done(function (resp) {
+          if (resp.length == 0) {
+            $("#errmessage2").html("Invalid credentials");
+            // $("#txtPwdd").removeClass("is-valid").addClass("is-invalid");
+
+          }
+          else if (resp.length == 1 && resp[0].status == 1) {
+            $("#errmessage2").html("Logged in as " + resp[0].Account);
+            // $("#txtPwdd").removeClass("is-invalid").addClass("is-valid");
+            if (resp[0].Account === "Influencer") {
+              location.href = "inf-Dash.html"
+              localStorage.setItem("activeuser", $("#txtEmaill").val());
+            }
+
+            else if (resp[0].Account === "Clientel") {
+              location.href = "cliental-dash.html";
+              localStorage.setItem("activeuser", $("#txtEmaill").val());
+            }
+
+            else
+              alert(resp);
+
+
+          }
+          else if (resp.length == 1 && resp[0].status == 0) {
+            $("#errmessage2").html("Blocked");
+          }
+
+        }).fail(function (err) {
+          alert(err.statusText);
+        })
+
+
+        // $.ajax(obj).done(function (resp) {
+        //       alert(resp);
+        //       if (resp === "Influencer")
+        //           {
+        //               location.href = "inf-Dash.html"
+        //               // localStorage.setItem("activeuser",$("#txtEmailL").val());
+        //           }
+
+        //       else if (resp === "Clientel")
+        //           {
+        //               location.href = "influ-finder.html";
+        //               // localStorage.setItem("activeuser",$("#txtEmailL").val());
+        //           }
+
+        //       else
+        //           alert(resp);
+        //   }).fail(function (err) {
+        //       alert(err.statusText);
+        //   });
+      });
+      $("#forgotpassword").click(function () {
+
+let obj = {
+  type: "post",
+  url: "/forgot-password",
+  data: {
+    txtEmaill: $("#txtEmaill").val()
+  }
+
+}
+$.ajax(obj).done(function (resp) {
+  $("#errmessage2").html(resp);
+
+}).fail(function (err) {
+  alert(err.statusText);
+
+})
+})
+
+    })
+  
+
+
+
+
+
+  </script>
+  <style>
+    #video-container {
+      position: relative;
+      width: 100%;
+      max-width: 1535px;
+      /* height: 500px; */
+      aspect-ratio: 1535/663;
+      /* border: 2px solid #ccc; */
+      background-color: #000;
+      /* resize: both; */
+      overflow: hidden;
+
+    }
+
+    #video {
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+    }
+
+    @media (max-width: 768px) {
+      #video-container {
+        width: 100%;
+        max-width: none;
+        height: 100vh;
+      }
+
+      #video {
+         object-fit: contain;
+        height:100%;
+        width: 100%;
+        transform: scale(1); /* Slight zoom-out effect */
+        transform-origin: center center; 
+     
+      }
+    }
+  </style>
+
+</head>
+
+<body style="background-color: #000;">
+  <nav class="navbar navbar-expand-lg sticky-top " style="background-color: black;  ">
+    <div class="container-fluid">
+      <img src="pics/logo4.png" alt="" width="60" height="48">
+
+      <a class="navbar-brand fs-2" href="#"
+        style="margin-right: 2px; margin-right: 5px; color: white;">InfluenceMarket</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" style="background-color: white;"
+        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <!-- <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li> -->
+          <li class="nav-item">
+            <a class="nav-link active " href="#team" style="color: white; margin-top: 10px;">Our Team</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active " href="#services" style="color: white; margin-top: 10px;">Our Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active " href="#reachus" style="color: white; margin-top: 10px;">Reach Us</a>
+          </li>
+          <!-- <i cl1ass="fa-solid fa-right-from-bracket" style="color: #ffffff;"></i> -->
+
+
+        </ul>
+        <form class="d-flex" role="search">
+         
+          <button type="button" class="btn mx-2" style="background-color: white; color: black; " data-bs-toggle="modal"
+            data-bs-target="#signup">SignUp</button>
+            <button type="button" class="btn" style="background-color: white; color: black;" data-bs-toggle="modal"
+            data-bs-target="#login">Login</button>
+            <!-- <a href="/Admin-Dash"><button type="button" class="btn btn-outline-primary">Admin dash</button></a> -->
+          <!-- <a href="/Inf-Dash"><button type="button" class="btn btn-outline-primary">Influencer</button></a>
+        
+        <a href="/Influencer-Finder"><button type="button" class="btn btn-outline-primary">Influencer-Finder</button></a> -->
+
+
+
+        </form>
+      </div>
+    </div>
+  </nav>
+  <div id="video-container">
+    <video id="video" src="new video landing page.mp4" width="700px"
+      height="500px" autoplay loop muted></video>
+  </div>
+
+  <nav class="navbar text-center" style="background-color: black;" id="services">
+    <div class="container-fluid">
+
+      <span class="navbar-brand mb-0 fs-1  " style="color: white; font-family:Verdana, Geneva, Tahoma, sans-serif ;">Our
+        Expertise </span>
+    </div>
+
+  </nav>
+
+
+  <div class="container ">
+    <div class="row  ">
+      <div class="col-md-4 ">
+        <img src="pics/search .jpg" alt="" width="100%" height="100%">
+      </div>
+      <div class="col-md-8">
+
+
+        <div class="row">
+          <h1 style="color: white;">
+            1.&nbsp;Find Your Influencer
+          </h1>
+        </div>
+        <div class="row mt-2 ">
+          <p style="color: white; text-align: justify;">
+            Our platform revolutionizes how influencers and clients connect by streamlining the process of finding the
+            perfect match. Leveraging advanced algorithms and a curated network, we enable clients to discover
+            influencers who align seamlessly with their brand values and target demographics. Influencers benefit from
+            increased visibility and access to lucrative collaboration opportunities with reputable brands. Our
+            platform ensures transparent insights into influencer performance metrics and audience engagement,
+            facilitating informed decision-making. By facilitating these connections, we empower influencers to
+            amplify their influence while helping clients execute effective marketing strategies that resonate
+            authentically with their audience, driving growth and fostering lasting partnerships in the digital realm
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+  <div class="container mt-2">
+    <div class="row ">
+      <div class="col-md-4 order-md-2 order-1">
+        <img src="pics/Collabration.png" alt="" width="100%" height="100%">
+      </div>
+
+      <div class="col-md-8 order-md-1 order-2">
+
+
+        <div class="row">
+          <h1 style="color: white;">
+            2.&nbsp;Collaborations
+          </h1>
+        </div>
+        <div class="row mt-2">
+          <p style="color: white; ">
+            Our platform facilitates dynamic collaborations between influencers and clients, fostering synergistic
+            partnerships that drive mutual growth. By bridging these connections, we empower influencers to showcase
+            their authentic voice and reach targeted audiences effectively. Clients benefit from tailored influencer
+            strategies that amplify brand visibility and engagement. Our collaborative approach ensures transparent
+            communication, strategic alignment, and measurable results, enhancing brand reputation and customer
+            loyalty. Through innovative campaigns and seamless integration, we enable influencers and clients to
+            co-create compelling content and impactful campaigns that resonate with audiences, ultimately achieving
+            shared business objectives in the ever-evolving digital landscape.
+          </p>
+        </div>
+
+      </div>
+
+
+    </div>
+  </div>
+  <div class="container mt-2">
+    <div class="row  ">
+      <div class="col-md-4 ">
+        <img src="pics/networkiing.png" alt="" width="100%" height="90%">
+      </div>
+      <div class="col-md-8">
+
+
+        <div class="row">
+          <h1 style="color: white;">
+            3. Netwoking
+          </h1>
+        </div>
+        <div class="row mt-2 ">
+          <p style="color: white;">
+            Our platform fosters a vibrant networking environment where influencers and clients converge to forge
+            meaningful connections. Through our intuitive interface and robust features, influencers can expand their
+            reach and cultivate relationships with diverse brands. Clients benefit from accessing a curated network of
+            influential personalities aligned with their marketing goals. Networking on our platform transcends
+            traditional boundaries, enabling seamless collaboration and strategic partnerships that drive mutual growth.
+            We facilitate transparent communication, insightful analytics, and tailored recommendations to enhance
+            networking efficacy. By empowering influencers and clients to engage authentically, our platform transforms
+            interactions into impactful collaborations, amplifying brand visibility and fostering long-term success in
+            the dynamic world of digital influence.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+    <nav class="navbar text-center" style="background-color: black;" id="team">
+      <div class="container-fluid d-flex justify-content-center">
+
+        <span class="navbar-brand mb-0 fs-1  "
+          style="color: white; font-family:Verdana, Geneva, Tahoma, sans-serif ;">Meet The Team </span>
+      </div>
+    </nav>
+    <div class="container mt-5 ">
+
+      <div class="row d-flex justify-content-center">
+
+
+        <div class="col-md-4 d-flex justify-content-center">
+          <div class="card mx-5" style="width: 18rem;">
+            <img src="pics/rajesh sir.png" class="card-img-top" alt="...">
+            <div class="card-body" style="background-color: black;">
+              <h5 class="card-title" style="color: white;">Mentor </h5>
+              <h5 class="card-title" style="color: white;">Rajesh K. Bansal </h5>
+              <p class="card-text" style="color: white; text-align: justify;">Sun Certified Java Programmer. 20+ Years
+                experience in Training &
+                Development. Founder of realJavaOnline.com, loves coding in Java(J2SE, J2EE), C++,PHP, Python,
+                AngularJS, Android,MERN Stack(MongoDB,Express,ReactJS,NodeJS).</p>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 d-flex justify-content-center">
+          <div class="card mx-5" style="width: 18rem;">
+
+            <img src="pics/yaten-new.jpg" class="card-img-top" alt="...">
+
+
+            <div class="card-body " style="background-color: black; ">
+              <h5 class="card-title" style="color: white;">Developer</h5>
+              <h5 class="card-title" style="color: white;">Yaten Arora</h5>
+              <p class="card-text" style="color: white;">Pursuing an engineering degree in the Department of Information
+                Technology at Dr.
+                B.R. Ambedkar National Institute of Technology, Jalandhar, Punjab.</p>
+            </div>
+
+          </div>
+        </div>
+
+
+
+
+      </div>
+    </div>
+
+    <nav class="navbar text-center mt-5" style="background-color: black;" id="reachus">
+      <div class="container-fluid d-flex justify-content-center">
+
+        <span class="navbar-brand mb-0 fs-1  "
+          style="color: white; font-family:Verdana, Geneva, Tahoma, sans-serif ;">Reach Us</span>
+      </div>
+    </nav>
+
+   
+    <div class="container mt-5">
+      <div class="row">
+          <div class="col-lg-6 mb-4">
+              <div class="row">
+                  <h2 style="color: white;">Get in Touch with Influence Market</h2>
+              </div>
+              <div class="row mt-3">
+                  <p style="color: white;">Experience Excellence with Influence Market: Elevating your brand with expert influencer connections, innovative strategies, and unmatched dedication to your success.</p>
+              </div>
+              <div class="row mt-3">
+                  <p style="color: white;">
+                      <i class="fa-solid fa-location-dot fa-xl" style="color: #ffffff;"></i>
+                      Grand Trunk Road, Barnala - Amritsar Bypass Rd, Jalandhar, Punjab 144011
+                  </p>
+              </div>
+              <div class="row mt-3">
+                  <p style="color: white;">
+                      <i class="fa-solid fa-tty fa-xl" style="color: #ffffff;"></i>
+                      +91 7814841872
+                  </p>
+              </div>
+              <div class="row mt-3">
+                  <p style="color: white;">
+                      <i class="fa-solid fa-envelope fa-xl" style="color: #ffffff;"></i>
+                      arorayatin005@gmail.com
+                  </p>
+              </div>
+          </div>
+          <div class="col-lg-6">
+              <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3405.662273018696!2d75.53326897540065!3d31.395874574271215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391a51d30c180edf%3A0x5b7633718d17ef33!2sDr%20B%20R%20Ambedkar%20National%20Institute%20of%20Technology%20Jalandhar!5e0!3m2!1sen!2sin!4v1721142818608!5m2!1sen!2sin"
+                  width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+      </div>
+  </div>
+
+    <nav class="navbar mt-4" style="background-color: black;">
+      <div class="container-fluid d-flex justify-content-center ">
+        <p style="color: white;">copyright@bce</p>
+      </div>
+    </nav>
+
+
+
+
+
+
+
+
+    <!-- ------------------------------------------------------------------------ -->
+    <center>
+
+
+
+      <div class="modal fade" id="signup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content " style="background-color: #000; ">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Create Your New Account</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: white;"></button>
+            </div>
+            <div class="modal-body">
+              <form method="post">
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label" style="color: white;">Email address</label>
+                  <input type="email" class="form-control" id="txtEmail" aria-describedby="emailHelp" name="txtEmail" style="background-color: #000; color: white;"
+                    required autofocus>
+                  <div id="emailHelp" class="form-text" style="color: white;">We'll never share your email with anyone
+                    else.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="exampleInputPassword1" class="form-label" style="color: white;">Password</label>
+                  <input type="password" class="form-control" id="txtPwd" name="txtPwd" required style="background-color: #000; color: white;"
+                  required>>
+                </div>
+                <div class="mb-3">
+                  <label for="exampleInputPassword1" class="form-label" style="color: white;"> Confirm Password</label>
+                  <input type="password" class="form-control" id="txtConPwd" name="txtConPwd" required style="background-color: #000; color: white;"
+                  required>>
+                </div>
+                <div class="form-check">
+                  <label class="form-label" style="color: white;"><b>Account type</b></label><br>
+                  <input class="form-check-input" type="radio" name="acc" id="radColab" value="Clientel" required
+                    style="color: white;">
+                  <p style="color: white;">
+                    Clientel
+                  </p>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="acc" id="radInf" value="Influencer" required>
+                  <p style="color: white;">Influencer</p>
+                </div>
+                <button type="button" class="btn btn-primary" id="submitbtn">Submit</button>
+                <br>
+                <span id="errmessage" style="color: white;"></span>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="login" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content " style="background-color: black;">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Already Have An Account</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: white;"></button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label" style="color: white;">Email address</label>
+                  <input type="email" class="form-control" id="txtEmaill" name="txtEmaill" aria-describedby="emailHelp"
+                    required style="background-color: #000; color: white;" autofocus>
+                  <div id="emailHelp" class="form-text" style="color: white;">We'll never share your email with anyone else.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="exampleInputPassword1" class="form-label" style="color: white;">Password</label>
+                  <input type="password" class="form-control" id="txtPwdd" name="txtPwdd" required style="background-color: #000; color: white;"
+                  >
+                </div>
+
+                <button type="button" class="btn btn-primary" id="loginbtn">Login</button>
+                <br>
+                <span id="errmessage2" style="color: white;"></span>
+                <br>
+                <button type="button" class="btn btn-outline-success bs-success-border-subtle"
+                  id="forgotpassword">Forgot
+                  Password </button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </center>
+</body>
+
+</html>

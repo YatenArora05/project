@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script>
+            function doPrev(fileCtrl,imgPrev)
+       {
+           let [file] = fileCtrl.files
+           if (file) {
+               imgPrev.src = URL.createObjectURL(file)
+           }
+       }
+       </script>
+       <script>
+        $(document).ready(function(){
+          let active=localStorage.getItem("activeuser");
+            $("#txtEmail").val(active).prop("readonly",true);
+
+
+        $("#btnSearch").click(function(){
+       
+                    let obj={
+                        type:"get",
+                        url:"/find-user-details",
+                        data:{
+                            txtEmail:$("#txtEmail").val()
+                        }
+                    }
+                    $.ajax(obj).done(function(jsonAry)
+                    {
+                        if(jsonAry.length==0)
+                        {
+                            alert("No Existed Data");
+                            return;
+                        }
+                    
+                        // alert(JSON.stringify(jsonAry));
+                        $("#txtName").val(jsonAry[0].name);
+                        $("#txtLastName").val(jsonAry[0].lastname);
+                        $("#txtGender").val(jsonAry[0].gender);
+                        $("#txtPwd").val(jsonAry[0].pwd);//table colu. wala
+                        $("#dob").val(jsonAry[0].dob);//table colu. wala
+                        $("#txtPhone").val(jsonAry[0].contact);
+                        $("#prev").prop("src","uploads/"+jsonAry[0].picpath);
+                        $("#hdn").val(jsonAry[0].picpath);
+                        $("#address").val(jsonAry[0].address);
+                        $("#city").val(jsonAry[0].city);
+                        $("#state").val(jsonAry[0].state);
+                        $("#zip").val(jsonAry[0].zip);
+                        $("#insta").val(jsonAry[0].insta);
+                        $("#facebook").val(jsonAry[0].fb);
+                        $("#youtube").val(jsonAry[0].youtube);
+                        $("#field").val(jsonAry[0].field.split(","));
+                        let selectedFields = jsonAry[0].ifields.split(",");
+                    $("#field option").each(function() {
+                    if (selectedFields.includes($(this).val()))
+                     {
+                    $(this).addClass('highlighted-option');
+                   }
+  })
+                        $("#comments").val(jsonAry[0].txt);
+                        
+                        
+
+
+                    }).fail(function(err)
+                    {
+                        alert(err.statusText);
+                    })
+                  })
+
+
+                  let sv = {
+    type: "get",
+    url: "/disable-button",
+    data: {
+        txtEmail: localStorage.getItem("activeuser")
+    }
+};
+
+$.ajax(sv).done(function(jsonAry) {
+    console.log("Response:", jsonAry); // Log the response to check its content
+    
+       if (jsonAry.length == 0) {
+        $("#savebtn").prop("disabled", false);
+        $("#updatebtn").prop("disabled", true);
+        
+          } else if (jsonAry.length == 1) {
+        $("#savebtn").prop("disabled", true);
+        $("#updatebtn").prop("disabled", false);
+        
+       } else {
+        console.log("Unexpected response length");
+     }
+        }).fail(function(err) {
+          alert(err.statusText)
+});
+
+                })
+       </script>
+       <style>
+        body{
+          background-color: black;
+        }
+        label{
+          color: white;
+        }
+        input[type="email"],[type="text"],[type="password"],[type="date"]
+        {
+          background-color: black;
+          color: white;
+        }
+        .highlighted-option{
+          background-color: grey;
+
+        }
+      
+       </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg sticky-top " style="background-color: black;  ">
+    <div class="container-fluid">
+      <img src="pics/logo4.png" alt="" width="60" height="48">
+
+      <a class="navbar-brand fs-2" href="#"
+        style="margin-right: 2px; margin-right: 5px; color: white;">InfluenceMarket</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" style="background-color: white;"
+        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          
+         
+        
+
+
+        </ul>
+        <form class="d-flex" role="search">
+          <!-- <i class="fa-solid fa-right-from-bracket fa-2xl" style="color: #ffffff;"></i> -->
+          <!-- <a href="/Inf-Dash"><button type="button" class="btn btn-outline-primary">Influencer</button></a>
+        <a href="/Admin-Dash"><button type="button" class="btn btn-outline-primary">Admin dash</button></a>
+        <a href="/Influencer-Finder"><button type="button" class="btn btn-outline-primary">Influencer-Finder</button></a> -->
+
+
+
+        </form>
+      </div>
+    </div>
+  </nav>
+  <nav class="navbar " style="background-color: black;">
+    <div class="container-fluid d-flex justify-content-center">
+      <span class="navbar-brand mb-0 h1"><h1 style="color: white;">Profile </h1></span>
+    </div>
+
+  </nav>
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+    <form class="row g-3" method="post" enctype="multipart/form-data">
+      <input type="hidden" id="hdn" name="hdn">
+        <div class="col-md-6">
+          <label for="txtEmail" class="form-label">Email</label>
+          <input type="email" class="form-control" id="txtEmail" name="txtEmail" style="background-color: black; color: white;" >
+        </div>
+        <div class="col-md-2">
+            
+            <button type="button" class="btn btn-primary" style="margin-top: 4.25vh;" id="btnSearch" >Search</button>
+
+            
+          </div>
+        <div class="col-md-2" >
+          <p style="margin-top: 7%; color: white;" >
+            Upload Your Profile Pic :
+            <br>
+            <input type="file" name="ppic" id="ppic" onchange="doPrev(this,prev);">
+        </p>
+        </div>
+        
+        <div class="col-md-2">
+            
+            <img src="" alt="" id="prev" width="120" height="120" style="margin-top: 3%;">
+            
+          </div>
+          <div class="col-md-6">
+            <label for="txtName" class="form-label">Name</label>
+            <input type="text" class="form-control" id="txtName" name="txtName" required style="background-color: black; color: white;">
+          </div>
+          <div class="col-md-6">
+            <label for="txtLastName" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="txtLastName" name="txtLastName" style="background-color: black; color: white;">
+          </div>
+
+          
+          
+          <div class="col-md-4">
+            <label for="txtGender" class="form-label">Gender</label>
+            <select  class="form-select" id="txtGender" name="txtGender" style="background-color: black; color: white;">
+              <option selected>Choose</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label for="dob" class="form-label">DOB</label>
+            <input type="date" class="form-control" id="dob" name="dob" style="background-color: black; color: white;">
+          </div>
+          <div class="col-md-4">
+            <label for="txtPhone" class="form-label">Phone</label>
+            <input type="text" class="form-control" id="txtPhone" name="txtPhone" style="background-color: black; color: white;">
+          </div>
+    
+        <div class="col-12">
+          <label for="address" class="form-label">Address (Optional)</label>
+          <input type="text" class="form-control" id="address" name="address" placeholder="Apartment, studio, or floor" style="background-color: black; color: white;">
+        </div>
+        <div class="col-md-6">
+          <label for="city" class="form-label">City</label>
+          <input type="text" class="form-control" id="city" name="city" style="background-color: black; color: white;">
+        </div>
+        <div class="col-md-4">
+          <label for="state" class="form-label">State</label>
+          <select id="state" name="state" class="form-select" style="background-color: black; color: white;">
+            <option selected>Choose</option>
+            <option value="andhra_pradesh">Andhra Pradesh</option>
+            <option value="arunachal_pradesh">Arunachal Pradesh</option>
+            <option value="assam">Assam</option>
+            <option value="bihar">Bihar</option>
+            <option value="chhattisgarh">Chhattisgarh</option>
+            <option value="goa">Goa</option>
+            <option value="gujarat">Gujarat</option>
+            <option value="haryana">Haryana</option>
+            <option value="himachal_pradesh">Himachal Pradesh</option>
+            <option value="jharkhand">Jharkhand</option>
+            <option value="karnataka">Karnataka</option>
+            <option value="kerala">Kerala</option>
+            <option value="madhya_pradesh">Madhya Pradesh</option>
+            <option value="maharashtra">Maharashtra</option>
+            <option value="manipur">Manipur</option>
+            <option value="meghalaya">Meghalaya</option>
+            <option value="mizoram">Mizoram</option>
+            <option value="nagaland">Nagaland</option>
+            <option value="odisha">Odisha</option>
+            <option value="punjab">Punjab</option>
+            <option value="rajasthan">Rajasthan</option>
+            <option value="sikkim">Sikkim</option>
+            <option value="tamil_nadu">Tamil Nadu</option>
+            <option value="telangana">Telangana</option>
+            <option value="tripura">Tripura</option>
+            <option value="uttar_pradesh">Uttar Pradesh</option>
+            <option value="uttarakhand">Uttarakhand</option>
+            <option value="west_bengal">West Bengal</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label for="zip" class="form-label">Zip</label>
+          <input type="text" class="form-control" id="zip" name="zip" style="background-color: black; color: white;">
+        </div>
+      
+        
+          <div class="col-md-3">
+            <label for="insta" class="form-label">Instagram Username</label>
+            <input type="text" class="form-control" id="insta" name="insta" style="background-color: black; color: white;">
+          </div>
+          <div class="col-md-3">
+            <label for="youtube" class="form-label">YouTube Channel</label>
+            <input type="text" class="form-control" id="youtube" name="youtube" style="background-color: black; color: white;">
+          </div>
+          <div class="col-md-3">
+            <label for="facebook" class="form-label">Facebook Username</label>
+            <input type="text" class="form-control" id="facebook" name="facebook" style="background-color: black; color: white;">
+          </div>
+          <div class="col-md-3">
+            <label for="twitter" class="form-label">Twitter Username</label>
+            <input type="text" class="form-control" id="twitter" name="twitter" style="background-color: black; color: white;">
+          </div>
+          <div class="col-md-12">
+            <label for="field" class="form-label">Content Type</label>
+            <select id="field" name="field" class="form-select" multiple style="background-color: black; color: white;">
+              <option value="Sports">Sports</option>
+              <option value="Tech">Tech</option>
+              <option value="Fashion">Fashion</option>
+              <option value="Coding">Coding</option>
+              <option value="Fitness">Fitness</option>
+              <option value="Gaming">Gaming</option>
+              <option value="Finance">Finance</option>
+              <option value="Podcast">Podcast</option>
+              <option value="Grooming">Grooming</option>
+              <option value="Music">Music</option>
+              <option value="Comedy">Comedy</option>
+              <option value="Information">Information</option>
+            </select>
+          </div>
+          <div class="form-floating" class="col-md-9">
+            <textarea class="form-control" placeholder="Leave a comment here" id="comments" name="comments" style="height: 100px;background-color: black; color: white;"></textarea>
+            <label for="comments">Comments</label>
+          </div>
+       
+        <div class="col-12">
+            <center>
+          <button type="submit" class="btn btn-primary" formaction="/save-process" id="savebtn">Save</button>
+          <button type="submit" class="btn btn-primary" formaction="/update-process" id="updatebtn">Update</button>
+        </center>
+        </div>
+      </form>
+    </div>
+    </div>
+</body>
+</html>
