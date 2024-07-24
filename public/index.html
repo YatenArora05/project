@@ -109,7 +109,7 @@
             $("#errmessage2").html("Logged in as " + resp[0].Account);
             // $("#txtPwdd").removeClass("is-invalid").addClass("is-valid");
             if (resp[0].Account === "Influencer") {
-              location.href = "inf-Dash.html"
+              location.href = "Inf-Dash.html"
               localStorage.setItem("activeuser", $("#txtEmaill").val());
             }
 
@@ -126,7 +126,6 @@
           else if (resp.length == 1 && resp[0].status == 0) {
             $("#errmessage2").html("Blocked");
           }
-
         }).fail(function (err) {
           alert(err.statusText);
         })
